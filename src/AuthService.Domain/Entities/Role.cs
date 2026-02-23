@@ -6,11 +6,11 @@ public class Role
 {
     [Key]
     [MaxLength(16)]
-    public string Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 
-    [Required]
-    [MaxLength(50)]
-    public string Name { get; set; }
+    [Required(ErrorMessage = "El nombre del rol es obligatorio.")]
+    [MaxLength(100, ErrorMessage = "El nombre del rol no puede superar los 100 caractares.")]
+    public string Name { get; set; } = string.Empty;
 
     [Required]
     [MaxLength(255)]
