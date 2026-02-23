@@ -17,7 +17,7 @@ public class Role
     public string Description { get; set; }
 
     // se va a utilizar para relacionarse con UserRole
-    public ICollection<UserRole> UserRoles { get; set; }
+    public ICollection<UserRole> UserRoles { get; set; } = [];
 }
 
 /*Roles

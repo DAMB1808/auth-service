@@ -1,7 +1,8 @@
 using System.Security.Cryptography;
 using System.text;
 
-name AuthService.Application.Service
+namespace AuthService.Application.Services;
+
 private const string Alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     public static class UuidGenerator
