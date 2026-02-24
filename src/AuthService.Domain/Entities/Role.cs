@@ -1,26 +1,32 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using AuthService.Domain.Enums;
 
-namespace AuthService.Domain.Entities.Role;
+namespace AuthService.Domain.Entities;
 
 public class Role
 {
-    [Key]
-    [MaxLength(16)]
-    public string Id { get; set; } = string.Empty;
+ [Key]
+ [MaxLength(16)]
+public string Id { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "El nombre del rol es obligatorio.")]
-    [MaxLength(100, ErrorMessage = "El nombre del rol no puede superar los 100 caractares.")]
-    public string Name { get; set; } = string.Empty;
+[Required(ErrorMessage = "El nombre del rol es obligatorio.")]
+[MaxLength(100, ErrorMessage = "El nombre del rol no puede superar los 100 caracteres.")]
 
-    [Required]
-    [MaxLength(255)]
-    public string Description { get; set; }
+public string Name { get; set; } = string. Empty;
 
-    // se va a utilizar para relacionarse con UserRole
-    public ICollection<UserRole> UserRoles { get; set; } = [];
+
+public DateTime CreatedAt { get; set; } = DateTime. UtcNow;
+
+public DateTime UpdatedAt { get; set; } = DateTime. UtcNow;
+
+
+public ICollection<UserRole> UserRoles { get; set; } = [];
 }
 
-/*Roles
+/*
+Vista de la tabla a modo SQL
+Roles
 +--------------+--------------+------------------+
 | Id           | Name         | Description      |
 +--------------+--------------+------------------+
@@ -28,4 +34,4 @@ public class Role
 | USER         | User         | Usuario normal   |
 | GUEST        | Guest        | Invitado         |
 +--------------+--------------+------------------+
- */
+*/
