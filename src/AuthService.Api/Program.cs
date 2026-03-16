@@ -47,19 +47,17 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-try {
-
+    try {
         logger.LogInformation("Iniciando migracion de la base de datos");
         await context.Database.EnsureCreatedAsync();
         logger.LogInformation("Seed de datos completado con exito");
-
+    }
+    catch (Exception es)
+    {
+        logger.LogError(es, "Error al inicializar la base de datos.");
+        throw;
+    }
 }
- catch (Exception es)
-{
-    logger.LogError(es, "Error al inicializar la base de datos.");
-    throw;
-}
-
 
 app.Run();
 
