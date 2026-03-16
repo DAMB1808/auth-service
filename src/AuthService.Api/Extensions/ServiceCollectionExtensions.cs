@@ -7,15 +7,17 @@ namespace AuthService.Api.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services, 
+    public static IServiceCollection AddPersistenceServices(this IServiceCollection services,
     IConfiguration configuration)
     {
+        // INICIALIZANDO LA CONEXION DE LA BASE DE DATOS
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
-                   .UseSnakeCaseNamingConvention());
-
+                .UseSnakeCaseNamingConvention());
+    
         services.AddHealthChecks();
 
         return services;
     }
 }
+

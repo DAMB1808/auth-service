@@ -1,7 +1,7 @@
 using AuthService.Domain.Entities;
+using AuthService.Application.Services;
 using AuthService.Domain.Constants;
 using Microsoft.EntityFrameworkCore;
-using AuthService.Application.Services;
 
 namespace AuthService.Persistence.Data;
 
@@ -10,7 +10,7 @@ public static class DataSeeder
     public static async Task SeedAsync(ApplicationDbContext context)
     {
         // Verificar si ya existen roles
-        if (!context.Roles.Any()) 
+        if (!context.Roles.Any())
         {
             var roles = new List<Role>
             {
@@ -84,4 +84,3 @@ public static class DataSeeder
         }
     }
 }
-
