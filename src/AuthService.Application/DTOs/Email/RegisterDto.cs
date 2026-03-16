@@ -2,9 +2,17 @@ using System.ComponentModel.DataAnnotations;
 using AuthService.Application.Interfaces;
 
 namespace AuthService.Application.DTOs;
+namespace AuthService.Application.Interfaces;
+
+public interface IFileData
+{
+    string FileName { get; }
+    Stream Content { get; }
+}
 
 public class RegisterDto
 {
+    
     [Required]
     [MaxLength(25)]
     public string Name { get; set; } = string.Empty;
