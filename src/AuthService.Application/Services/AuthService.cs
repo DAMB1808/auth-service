@@ -3,6 +3,7 @@ using AuthService.Application.Interfaces;
 using AuthService.Application.Exceptions;
 using AuthService.Application.Extensions;
 using AuthService.Application.Validators;
+using AuthService.Application.Services;  
 using AuthService.Domain.Constants;
 using AuthService.Domain.Entities;
 using AuthService.Domain.Interfaces;
@@ -10,6 +11,7 @@ using AuthService.Domain.Enums;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using AuthService.Application.DTOs.Email;
+
 
 namespace AuthService.Application.Services;
 
@@ -23,7 +25,8 @@ public class AuthService(
     IConfiguration configuration,
     ILogger<AuthService> logger) : IAuthService
 {
-    private readonly ICloudinaryService _cloudinaryService = cloudinaryService;
+
+	private readonly ICloudinaryService _cloudinaryService = cloudinaryService;
     public async Task<RegisterResponseDto> RegisterAsync(RegisterDto registerDto)
     {
         // Verificar si el email ya existe
@@ -49,8 +52,7 @@ public class AuthService(
             if (!isValid)
             {
                 logger.LogWarning($"File validation failed: {errorMessage}");
-                throw new BusinessExcepti
-                on(ErrorCodes.INVALID_FILE_FORMAT, errorMessage!);
+                throw new BusinessException(ErrorCodes.INVALID_FILE_FORMAT, errorMessage!);
             }
 
             try
@@ -147,7 +149,6 @@ public class AuthService(
             EmailVerificationRequired = true
         };
     }
-
     public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto)
     {
         // Buscar usuario por email o username
@@ -201,7 +202,6 @@ public class AuthService(
             ExpiresAt = DateTime.UtcNow.AddMinutes(expiryMinutes)
         };
     }
-
     private UserResponseDto MapToUserResponseDto(User user)
     {
         var userRole = user.UserRoles.FirstOrDefault()?.Role?.Name ?? RoleConstants.USER_ROLE;
@@ -221,7 +221,6 @@ public class AuthService(
             UpdatedAt = user.UpdatedAt
         };
     }
-
         private UserDetailsDto MapToUserDetailsDto(User user)
     {
         return new UserDetailsDto
@@ -232,7 +231,6 @@ public class AuthService(
             Role = user.UserRoles.FirstOrDefault()?.Role?.Name ?? RoleConstants.USER_ROLE
         };
     }
-
     public async Task<EmailResponseDto> VerifyEmailAsync(VerifyEmailDto verifyEmailDto)
     {
         var user = await userRepository.GetByEmailVerificationTokenAsync(verifyEmailDto.Token);
@@ -275,7 +273,6 @@ public class AuthService(
             }
         };
     }
-
         public async Task<EmailResponseDto> ResendVerificationEmailAsync(ResendVerificationDto resendDto)
     {
         var user = await userRepository.GetByEmailAsync(resendDto.Email);
@@ -328,7 +325,6 @@ public class AuthService(
             };
         }
     }
-
         public async Task<EmailResponseDto> ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto)
     {
         var user = await userRepository.GetByEmailAsync(forgotPasswordDto.Email);
@@ -381,7 +377,6 @@ public class AuthService(
             Data = new { email = forgotPasswordDto.Email, initiated = true }
         };
     }
-
     public async Task<EmailResponseDto> ResetPasswordAsync(ResetPasswordDto resetPasswordDto)
     {
         var user = await userRepository.GetByPasswordResetTokenAsync(resetPasswordDto.Token);
@@ -411,7 +406,6 @@ public class AuthService(
             Data = new { email = user.Email, reset = true }
         };
     }
-
     public async Task<UserResponseDto?> GetUserByIdAsync(string userId)
     {
         var user = await userRepository.GetByIdAsync(userId);
