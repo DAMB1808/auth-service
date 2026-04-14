@@ -66,6 +66,12 @@ public class AuthController(IAuthService authService) : ControllerBase
         });
     }
 
+// <summary>
+// 
+// </summary>
+// <param name="Name"> Nombre del usuario </param>
+// <returns></return>
+
     [HttpPost("register")]
     [RequestSizeLimit(10 * 1024 * 1024)] // 10MB límite
     [EnableRateLimiting("AuthPolicy")]

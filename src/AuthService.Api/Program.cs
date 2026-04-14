@@ -1,3 +1,4 @@
+using System.Reflection;
 using AuthService.Api.Extensions;
 using AuthService.Api.Middlewares;
 using AuthService.Api.ModelBinders;
@@ -52,9 +53,33 @@ builder.Services.AddSecurityOptions();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-// .....................................................
+/*builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Auth API",
+        Version = "v1",
+        Description = "API de autenticación"
+    });
 
+    /*
+    var xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "*.xml");
+
+    foreach (var xmlFile in xmlFiles)
+    {
+        options.IncludeXmlComments(xmlFile);
+    }
+    
+});*/
+
+
+builder.Services.AddSwaggerGen(options =>
+{
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+    options.IncludeXmlComments(xmlPath);
+});
 
 
 var app = builder.Build(); 
