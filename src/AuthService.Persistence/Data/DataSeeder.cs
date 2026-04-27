@@ -49,15 +49,14 @@ public static class DataSeeder
                     Surname = "User",
                     Username = "admin",
                     Email = "admin@ksports.local",
-                    //Password = passwordHasher.HashPassword("Admin1234!"),
-                    Password = "12345678",
+                    Password = passwordHasher.HashPassword("Admin1234!"),
                     Status = true,
                     UserProfile = new UserProfile
                     {
                         Id = profileId,
                         UserId = userId,
-                        //ProfilePicture = string.Empty,
-                        //Phone = string.Empty
+                        ProfilePicture = string.Empty,
+                        Phone = string.Empty
                     },
                     UserEmail = new UserEmail
                     {
