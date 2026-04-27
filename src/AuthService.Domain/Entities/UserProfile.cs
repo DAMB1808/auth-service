@@ -1,24 +1,20 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AuthService.Domain.Entities;
-
-public class UserProfile
+namespace AuthService.Domain.Entities
 {
-    [Key]
-    [MaxLength(16)]
-    public string Id { get; set; } = string.Empty;
+    public class UserProfile
+    {
+        public string Id { get; set; } = default!;
 
-    [Required]
-    [MaxLength(16)]
-    [ForeignKey(nameof(User))] // Llave foranea hacia la entidad User
-    public string UserId { get; set; } = string.Empty;
+        public string UserId { get; set; } = default!;
 
-    public string ProfilePictureUrl { get; set; } = null!;
-    public string Bio { get; set; } = string.Empty;
-    public DateTime DateOfBirth { get; set; } 
+        public string? ProfilePicture { get; set; }
 
-    public User User { get; set; } = null!;
+        public string? Phone { get; set; }
+
+        public User? User { get; set; }
+    }
 }
 
 

@@ -3,10 +3,10 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace AuthService.Application.DTOs.Email;
-
-public class ResendVerificationDto
+namespace AuthService.Application.DTOs.Email
 {
-    [Required(ErrorMessage = "El email es obligatorio")]
-    public string Email { get; set; } = string.Empty;
+    public class ResendVerificationDto
+    {
+        public string Email { get; set; } = string.Empty;
+    }
 }

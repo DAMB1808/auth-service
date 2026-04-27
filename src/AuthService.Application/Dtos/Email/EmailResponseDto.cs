@@ -1,8 +1,11 @@
-namespace AuthService.Application.DTOs.Email;
- 
-public class EmailResponseDto
+namespace AuthService.Application.DTOs.Email
 {
-    public bool Succes { get; set; }
- 
-    public string Message { get; set; } = string.Empty;
+    public class EmailResponseDto
+    {
+        public bool Success { get; set; }
+
+        public string Message { get; set; } = string.Empty;
+
+        public object? Data { get; set; }
+    }
 }

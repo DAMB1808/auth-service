@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 
 namespace AuthService.Application.Services;
- 
+
 public static class TokenGenerator
 {
     public static string GenerateEmailVerificationToken()
@@ -19,12 +19,10 @@ public static class TokenGenerator
         using var rng = RandomNumberGenerator.Create();
         var bytes = new byte[length];
         rng.GetBytes(bytes);
+
         return Convert.ToBase64String(bytes)
-        .Replace("+", "-")
-        .Replace("/", "_")
-        .Replace("=", "");
-
+            .Replace("+", "-")
+            .Replace("/", "_")
+            .Replace("=", "");
     }
-
 }
- 
