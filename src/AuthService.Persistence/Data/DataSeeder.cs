@@ -35,7 +35,7 @@ public static class DataSeeder
             var adminRole = await context.Roles.FirstOrDefaultAsync(r => r.Name == RoleConstants.ADMIN_ROLE);
             if (adminRole != null)
             {
-                //var passwordHasher = new PasswordHashService();
+                var passwordHasher = new PasswordHashService();
  
                 var userId = UuidGenerator.GenerateUserId();
                 var profileId = UuidGenerator.GenerateUserId();
