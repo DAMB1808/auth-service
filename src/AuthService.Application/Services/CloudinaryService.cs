@@ -2,27 +2,31 @@ using AuthService.Application.Interfaces;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.Extensions.Configuration;
+
 namespace AuthService.Application.Services;
 
 public class CloudinaryService(IConfiguration configuration) : ICloudinaryService
 {
-	    private readonly Cloudinary _cloudinary = new(new Account(
+    private readonly Cloudinary _cloudinary = new(new Account(
         configuration["CloudinarySettings:CloudName"],
         configuration["CloudinarySettings:ApiKey"],
         configuration["CloudinarySettings:ApiSecret"]
     ));
-        public async Task<string> UploadImageAsync(IFileData imageFile, string fileName)
+
+    private readonly string _folder = configuration["CloudinarySettings:Folder"] ?? "auth_service/profiles";
+    private readonly string _baseUrl = configuration["CloudinarySettings:BaseUrl"] ?? "https://res.cloudinary.com/dktwa0obs/image/upload/v1/auth_dotnet/";
+
+    public async Task<string> UploadImageAsync(IFileData imageFile, string fileName)
     {
         try
         {
             using var stream = new MemoryStream(imageFile.Data);
 
-            var folder = configuration["CloudinarySettings:Folder"] ?? "auth_service/profiles";
             var uploadParams = new ImageUploadParams
             {
                 File = new FileDescription(imageFile.FileName, stream),
-                PublicId = $"{folder}/{fileName}",
-                Folder = folder,
+                PublicId = $"{_folder}/{SanitizeFileName(fileName)}",
+                Folder = _folder,
                 Transformation = new Transformation()
                     .Width(400)
                     .Height(400)
@@ -39,21 +43,21 @@ public class CloudinaryService(IConfiguration configuration) : ICloudinaryServic
                 throw new InvalidOperationException($"Error uploading image: {uploadResult.Error.Message}");
             }
 
-            // Retornar sólo el nombre variable (filename) para almacenar en la DB
-            return fileName;
+            return SanitizeFileName(fileName);
         }
         catch (Exception ex)
         {
             throw new InvalidOperationException($"Failed to upload image to Cloudinary: {ex.Message}", ex);
         }
     }
-        public async Task<bool> DeleteImageAsync(string publicId)
+
+    public async Task<bool> DeleteImageAsync(string publicId)
     {
         try
         {
             var deleteParams = new DelResParams
             {
-                PublicIds = [publicId]
+                PublicIds = new List<string> { publicId }
             };
 
             var result = await _cloudinary.DeleteResourcesAsync(deleteParams);
@@ -64,25 +68,30 @@ public class CloudinaryService(IConfiguration configuration) : ICloudinaryServic
             return false;
         }
     }
-        public string GetDefaultAvatarUrl()
+
+    /// <summary>
+    /// Devuelve la URL completa de la imagen en Cloudinary si existe.
+    /// Retorna string.Empty si imagePath es null o vacío (frontend maneja fallback).
+    /// </summary>
+    public string GetFullImageUrl(string imagePath)
     {
+        if (string.IsNullOrWhiteSpace(imagePath))
+            return string.Empty;
 
-        var defaultPath = configuration["CloudinarySettings:DefaultAvatarPath"] ?? "default-avatar_ewzxwx.png";
-        if (defaultPath.Contains('/')) return defaultPath.Split('/').Last();
-        return defaultPath;
+        var pathToUse = imagePath.Contains('/') ? imagePath : $"{_folder}/{imagePath}";
+        return $"{_baseUrl}{pathToUse}";
     }
-        public string GetFullImageUrl(string imagePath)
+
+    /// <summary>
+    /// Método obligatorio de la interfaz ICloudinaryService.
+    /// Devuelve string.Empty porque el backend ya no maneja default avatars.
+    /// </summary>
+    public string GetDefaultAvatarUrl()
     {
-        var baseUrl = configuration["CloudinarySettings:BaseUrl"] ?? "https://res.cloudinary.com/dug3apxt3/image/upload/";
-        var folder = configuration["CloudinarySettings:Folder"] ?? "auth_service/profiles";
-        var defaultPath = configuration["CloudinarySettings:DefaultAvatarPath"] ?? "default-avatar_ewzxwx.png";
-
-        var pathToUse = string.IsNullOrWhiteSpace(imagePath) ? defaultPath : imagePath;
-        if (!pathToUse.Contains('/')) pathToUse = $"{folder}/{pathToUse}";
-
-        return $"{baseUrl}{pathToUse}";
+        return string.Empty;
     }
-        private static string SanitizeFileName(string fileName)
+
+    private static string SanitizeFileName(string fileName)
     {
         return fileName
             .Trim()
@@ -90,5 +99,4 @@ public class CloudinaryService(IConfiguration configuration) : ICloudinaryServic
             .Replace("-", "_")
             .ToLowerInvariant();
     }
-    
 }
